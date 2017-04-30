@@ -7,13 +7,19 @@ Created on Mon Apr 24 12:41:09 2017
 from __future__ import division
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 #import matplotlib.dates as mdates
 #import matplotlib.pyplot as plt
 import re
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn import ensemble
+from sklearn import metrics
+from sklearn import neural_network
+from sklearn import decomposition
+
 from data_SVM import SVM
-user_data = pd.read_csv("D:\\Desktop\\Material\\STAT 154\\Kaggle\\ShrinkedData\\yelp_academic_dataset_review_train.csv")
+user_data = pd.read_csv("./data/yelp_academic_dataset_review_train.csv")
 
 # load the data
 load_num = 1000
@@ -61,9 +67,6 @@ for i in range(0,load_num):
     busi_star_temp.append(data_temp.stars.values[0])
     review_whole.append(data_temp.text.values[0])
     star_whole.append(data_temp.stars.values[0])
-
-    
-
 
 # Bag of words
 def review_to_words( review_text ):
@@ -121,10 +124,34 @@ train_review_features = train_data_features.toarray()
 print(train_review_features.shape)
 train_star = np.array(star_whole)
 
+# PCA
+pca = decomposition.PCA(n_components=50)
+train_review_features = pca.fit_transform(train_review_features)
+
 # Shuffle the tarining set and validation set
 print("Shuffle the data")
 review_train, review_test, star_train, star_test = train_test_split(train_review_features, train_star, test_size=0.2, random_state=0)
 
 # Fit linear regression on the model
-print("SVM")
-model = SVM(review_train,star_train,review_test,star_test)
+# print("SVM")
+# model = SVM(review_train,star_train,review_test,star_test)
+
+# Ensemble Methods
+rf = ensemble.RandomForestClassifier(n_estimators=30, max_features=20, max_depth=5)
+rf.fit(review_train, star_train)
+
+pred_train = rf.predict(review_train)
+pred_test = rf.predict(review_test)
+
+# Neural Network
+# nn = neural_network.MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+# nn.fit(review_train, star_train)
+
+# pred_train = nn.predict(review_train)
+# pred_test = nn.predict(review_test)
+
+# print(pred_train[:100])
+# print(pred_test[:100])
+
+print("Training accuracy: %f" % metrics.accuracy_score(pred_train, star_train))
+print("Test accuracy: %f" % metrics.accuracy_score(pred_test, star_test))
