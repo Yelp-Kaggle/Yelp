@@ -31,10 +31,11 @@ def pos_neg(raw_str, adj_list, adj_str, punctuation):
         word_list: processed list of tokenized sentences
         
     """
-    word_str = re.sub("[\s+\.\/_,$%^*(+\"\']+|[+——，。、@#￥%……&*（）【】：；:]", " ",raw_str)
+    word_str = re.sub("[\s+\.\/_,$%^*()+\"\']+|[+——，。、@#￥%……&*（）【】：；:]", " ",raw_str)
     word_str = word_str.replace('！',' ！').replace('？',' ？').replace('!',' !').replace('?',' ?').replace('~',' ~')
     word_str = re.sub(' +', " ", word_str)
     word_list = word_str.split()
+    #print(word_list)
     window = min(4, len(word_list))
     pre_word = deque(maxlen = window)
     pre_word.append(['','start'])
@@ -53,7 +54,7 @@ def pos_neg(raw_str, adj_list, adj_str, punctuation):
         if zg_temp[0] in pre_word:
             word_list.insert(zg_temp[1],w[0])
             del word_list[zg_temp[1]]
-        if w[1] == '.' and adj_temp[0] in pre_word:
+        if (w[0] == '!' or '?' or '~') and adj_temp[0] in pre_word:
             del word_list[i]
             word_list.insert(adj_temp[1],adj_temp[0][0])
         if w[1] == 'NN' and adj_temp[0] in pre_word:
@@ -62,5 +63,5 @@ def pos_neg(raw_str, adj_list, adj_str, punctuation):
     return adj_list, tags, word_list
     
 if __name__ =="__main__":
-    sample_text = "The steak is very lovely while others may be very interested about it, the lemon juice is AWESOME. I mean, 20, CAN YOU BELIEVE what's happening right here??!!!"
+    sample_text = "The steak is very lovely while others may be very interested about it, the lemon juice is AWESOME. I mean, 20, CAN YOU BELIEVE what's happening right here??!!!(right, things becomes easier?!)OOhh~ Yeah"
     adj_list, word_freq, wordlist = pos_neg(sample_text, [], "", string.punctuation)
