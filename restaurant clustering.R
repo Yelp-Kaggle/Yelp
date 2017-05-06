@@ -122,6 +122,22 @@ plot(1:20, wss_WI, type="b", xlab="Number of Clusters",
      ylab="Within groups sum of squares")
 
 
-write.table(c(km_AZ$centers,km_NC$centers,km_NV$centers,km_OH$centers,km_PA$centers,km_WI$centers), 
-            sep = ',', col.names = F, row.names = F,
-            file = 'clustering_centers.txt')
+write.table(km_AZ$centers, 
+          col.names = F, row.names = F,
+            file = 'clustering_centers_AZ.txt')
+
+write.table(km_NC$centers, 
+            col.names = F, row.names = F,
+            file = 'clustering_centers_NC.txt')
+write.table(km_NV$centers, 
+            col.names = F, row.names = F,
+            file = 'clustering_centers_NV.txt')
+write.table(km_OH$centers, 
+            col.names = F, row.names = F,
+            file = 'clustering_centers_OH.txt')
+write.table(km_PA$centers, 
+            col.names = F, row.names = F,
+            file = 'clustering_centers_PA.txt')
+write.table(km_WI$centers, 
+            col.names = F, row.names = F,
+            file = 'clustering_centers_WI.txt')
